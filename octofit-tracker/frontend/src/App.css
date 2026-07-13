@@ -1,0 +1,52 @@
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, #0f172a, #1d4ed8);
+  color: white;
+  text-align: center;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  width: min(720px, 100%);
+  margin-top: 1.5rem;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 1rem;
+  padding: 1.2rem;
+  backdrop-filter: blur(8px);
+}
+
+.activity-list {
+  width: min(720px, 100%);
+  margin-top: 1.5rem;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 1rem;
+  padding: 1.2rem;
+  text-align: left;
+}
+
+.activity-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.activity-list li + li {
+  margin-top: 0.75rem;
+}
+
+.error {
+  color: #fecaca;
+  margin-top: 1rem;
+}
