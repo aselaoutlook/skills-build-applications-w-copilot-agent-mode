@@ -1,19 +1,43 @@
 import { useEffect, useState } from 'react'
+import { NavLink, Route, Routes } from 'react-router-dom'
+import Activities from './components/Activities.jsx'
+import Leaderboard from './components/Leaderboard.jsx'
+import Teams from './components/Teams.jsx'
+import Users from './components/Users.jsx'
+import Workouts from './components/Workouts.jsx'
 import './App.css'
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || ''
+const codespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim()
+const apiBaseUrl = codespaceName
+  ? `https://${codespaceName}-8000.app.github.dev/api`
+  : 'http://localhost:8000/api'
+const healthEndpoint = `${apiBaseUrl}/health`
+const activitiesEndpoint = `${apiBaseUrl}/activities`
+const envNotice = codespaceName
+  ? null
+  : 'VITE_CODESPACE_NAME is unset. The app is using the local API fallback at http://localhost:8000/api.'
 
-function App() {
+const parseResponseItems = (payload) => {
+  if (Array.isArray(payload)) return payload
+  if (Array.isArray(payload?.data)) return payload.data
+  if (Array.isArray(payload?.results)) return payload.results
+  if (Array.isArray(payload?.items)) return payload.items
+  if (Array.isArray(payload?.docs)) return payload.docs
+  return []
+}
+
+function Home() {
   const [health, setHealth] = useState(null)
   const [activities, setActivities] = useState([])
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [healthResponse, activitiesResponse] = await Promise.all([
-          fetch(`${API_BASE_URL}/api/health`),
-          fetch(`${API_BASE_URL}/api/activities`),
+          fetch(healthEndpoint),
+          fetch(activitiesEndpoint),
         ])
 
         if (!healthResponse.ok || !activitiesResponse.ok) {
@@ -24,9 +48,11 @@ function App() {
         const activitiesData = await activitiesResponse.json()
 
         setHealth(healthData)
-        setActivities(activitiesData)
+        setActivities(parseResponseItems(activitiesData))
       } catch (err) {
         setError(err.message)
+      } finally {
+        setLoading(false)
       }
     }
 
@@ -38,33 +64,79 @@ function App() {
       <h1>OctoFit Tracker</h1>
       <p>Modern multi-tier fitness tracking application</p>
 
-      {error ? <p className="error">{error}</p> : null}
+      {envNotice && <div className="alert alert-warning">{envNotice}</div>}
+      {error && <div className="alert alert-danger">{error}</div>}
 
       <div className="card-grid">
         <div className="card">
           <h2>System status</h2>
-          <p>{health?.status || 'Checking backend...'}</p>
-          <small>{health?.message || 'Connecting to API'}</small>
+          <p>{loading ? 'Checking backend…' : health?.status ?? 'Unknown'}</p>
+          <small>{loading ? 'Connecting to API' : health?.message ?? 'No health message available'}</small>
         </div>
         <div className="card">
           <h2>Recent activities</h2>
-          <p>{activities.length} logged activities</p>
-          <small>Fetched from the backend API</small>
+          <p>{loading ? 'Loading…' : `${activities.length} logged activities`}</p>
+          <small>Using API: <code>{activitiesEndpoint}</code></small>
         </div>
       </div>
 
-      {activities.length > 0 ? (
+      {!loading && activities.length > 0 && (
         <div className="activity-list">
           <h3>Latest activity entries</h3>
           <ul>
             {activities.slice(0, 5).map((activity) => (
-              <li key={activity._id}>
+              <li key={activity._id ?? activity.id ?? activity.name ?? activity.type}>
                 <strong>{activity.name}</strong> — {activity.type} • {activity.duration} min • {activity.calories} kcal
               </li>
             ))}
           </ul>
         </div>
-      ) : null}
+      )}
+    </div>
+  )
+}
+
+function App() {
+  return (
+    <div>
+      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div className="container-fluid">
+          <NavLink className="navbar-brand" to="/">
+            OctoFit Tracker
+          </NavLink>
+          <div className="navbar-nav">
+            <NavLink className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`} to="/">
+              Home
+            </NavLink>
+            <NavLink className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`} to="/activities">
+              Activities
+            </NavLink>
+            <NavLink className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`} to="/leaderboard">
+              Leaderboard
+            </NavLink>
+            <NavLink className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`} to="/teams">
+              Teams
+            </NavLink>
+            <NavLink className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`} to="/users">
+              Users
+            </NavLink>
+            <NavLink className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`} to="/workouts">
+              Workouts
+            </NavLink>
+          </div>
+        </div>
+      </nav>
+
+      <div className="container py-4">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/activities" element={<Activities />} />
+          <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="/teams" element={<Teams />} />
+          <Route path="/users" element={<Users />} />
+          <Route path="/workouts" element={<Workouts />} />
+        </Routes>
+      </div>
     </div>
   )
 }
