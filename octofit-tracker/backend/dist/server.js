@@ -12,17 +12,20 @@ const users_1 = __importDefault(require("./routes/users"));
 const teams_1 = __importDefault(require("./routes/teams"));
 const leaderboard_1 = __importDefault(require("./routes/leaderboard"));
 const workouts_1 = __importDefault(require("./routes/workouts"));
-const baseUrl_1 = __importDefault(require("./utils/baseUrl"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = Number(process.env.PORT || 8000);
+const codespaceName = process.env.CODESPACE_NAME?.trim();
+const baseUrl = codespaceName
+    ? `https://${codespaceName}-8000.app.github.dev`
+    : 'http://localhost:8000';
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.get('/', (_req, res) => {
     res.json({
         status: 'ok',
         message: 'OctoFit Tracker backend API',
-        baseUrl: (0, baseUrl_1.default)(),
+        baseUrl,
         endpoints: ['/api/health', '/api/users/', '/api/teams/', '/api/activities/', '/api/leaderboard/', '/api/workouts/']
     });
 });
