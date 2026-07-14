@@ -8,6 +8,7 @@ import Workouts from './components/Workouts.jsx'
 import { apiBaseNotice, apiBaseSource, apiBaseUrl } from './utils/baseUrl.js'
 import './App.css'
 
+const configuredCodespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim() || ''
 const healthEndpoint = `${apiBaseUrl}/health`
 const activitiesEndpoint = `${apiBaseUrl}/activities/`
 
@@ -127,6 +128,10 @@ function App() {
       </nav>
 
       <div className="container py-4">
+        {apiBaseNotice && <div className="alert alert-warning">{apiBaseNotice}</div>}
+        <p className="small text-muted mb-3">
+          VITE_CODESPACE_NAME: <code>{configuredCodespaceName || '(unset)'}</code> | URL source: <code>{apiBaseSource}</code>
+        </p>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/activities" element={<Activities />} />

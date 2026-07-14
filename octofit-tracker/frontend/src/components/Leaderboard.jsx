@@ -65,7 +65,7 @@ function Leaderboard() {
               {entries.map((entry, index) => (
                 <tr key={entry._id ?? entry.id ?? index}>
                   <td>{entry.rank ?? index + 1}</td>
-                  <td>{entry.user ?? entry.name ?? 'Unknown'}</td>
+                  <td>{entry.username ?? entry.user ?? entry.name ?? 'Unknown'}</td>
                   <td>{entry.score ?? entry.points ?? 'N/A'}</td>
                 </tr>
               ))}

@@ -59,6 +59,9 @@ function Teams() {
               <div className="text-muted">
                 Members: {Array.isArray(team.members) ? team.members.length : team.size ?? 'N/A'}
               </div>
+              {(team.city || team.sport) && (
+                <small className="text-muted">{team.city ?? 'Unknown city'} • {team.sport ?? 'Unknown sport'}</small>
+              )}
             </div>
           ))}
         </div>

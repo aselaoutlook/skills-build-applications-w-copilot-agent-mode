@@ -57,6 +57,7 @@ function Users() {
             <div key={user._id ?? user.id ?? index} className="list-group-item">
               <strong>{user.name ?? user.username ?? 'Unnamed user'}</strong>
               <div className="text-muted">{user.email ?? user.emailAddress ?? 'No email available'}</div>
+              {user.fitnessGoal && <small className="text-muted">Goal: {user.fitnessGoal}</small>}
             </div>
           ))}
         </div>

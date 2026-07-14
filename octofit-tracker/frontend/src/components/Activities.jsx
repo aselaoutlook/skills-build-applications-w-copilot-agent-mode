@@ -61,6 +61,9 @@ function Activities() {
               <div className="text-muted">
                 {activity.type ?? 'Unknown type'} • {activity.duration ?? 'N/A'} min • {activity.calories ?? 'N/A'} kcal
               </div>
+              {activity.createdAt && (
+                <small className="text-muted">Logged: {new Date(activity.createdAt).toLocaleString()}</small>
+              )}
             </div>
           ))}
         </div>

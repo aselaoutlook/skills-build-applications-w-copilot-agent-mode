@@ -59,6 +59,9 @@ function Workouts() {
               <div className="text-muted">
                 {workout.type ?? 'Unknown type'} • {workout.duration ?? 'N/A'} min
               </div>
+              {(workout.difficulty || workout.coach) && (
+                <small className="text-muted">{workout.difficulty ?? 'Unknown difficulty'} • Coach: {workout.coach ?? 'N/A'}</small>
+              )}
             </div>
           ))}
         </div>
