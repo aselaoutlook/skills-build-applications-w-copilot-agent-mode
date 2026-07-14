@@ -1,16 +1,17 @@
 import { useEffect, useState } from 'react'
+import { apiBaseUrl } from '../utils/baseUrl.js'
 
-const codespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim()
-const apiBaseUrl = codespaceName
-  ? `https://${codespaceName}-8000.app.github.dev/api`
-  : 'http://localhost:8000/api'
-const endpoint = `${apiBaseUrl}/activities`
+const endpoint = `${apiBaseUrl}/activities/`
 
 const parseResponseItems = (response) => {
   if (Array.isArray(response)) return response
   if (Array.isArray(response?.data)) return response.data
+  if (Array.isArray(response?.data?.items)) return response.data.items
+  if (Array.isArray(response?.data?.results)) return response.data.results
+  if (Array.isArray(response?.data?.docs)) return response.data.docs
   if (Array.isArray(response?.results)) return response.results
   if (Array.isArray(response?.items)) return response.items
+  if (Array.isArray(response?.docs)) return response.docs
   return []
 }
 

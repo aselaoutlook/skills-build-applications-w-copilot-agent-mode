@@ -5,21 +5,18 @@ import Leaderboard from './components/Leaderboard.jsx'
 import Teams from './components/Teams.jsx'
 import Users from './components/Users.jsx'
 import Workouts from './components/Workouts.jsx'
+import { apiBaseNotice, apiBaseSource, apiBaseUrl } from './utils/baseUrl.js'
 import './App.css'
 
-const codespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim()
-const apiBaseUrl = codespaceName
-  ? `https://${codespaceName}-8000.app.github.dev/api`
-  : 'http://localhost:8000/api'
 const healthEndpoint = `${apiBaseUrl}/health`
-const activitiesEndpoint = `${apiBaseUrl}/activities`
-const envNotice = codespaceName
-  ? null
-  : 'VITE_CODESPACE_NAME is unset. The app is using the local API fallback at http://localhost:8000/api.'
+const activitiesEndpoint = `${apiBaseUrl}/activities/`
 
 const parseResponseItems = (payload) => {
   if (Array.isArray(payload)) return payload
   if (Array.isArray(payload?.data)) return payload.data
+  if (Array.isArray(payload?.data?.items)) return payload.data.items
+  if (Array.isArray(payload?.data?.results)) return payload.data.results
+  if (Array.isArray(payload?.data?.docs)) return payload.data.docs
   if (Array.isArray(payload?.results)) return payload.results
   if (Array.isArray(payload?.items)) return payload.items
   if (Array.isArray(payload?.docs)) return payload.docs
@@ -64,7 +61,7 @@ function Home() {
       <h1>OctoFit Tracker</h1>
       <p>Modern multi-tier fitness tracking application</p>
 
-      {envNotice && <div className="alert alert-warning">{envNotice}</div>}
+      {apiBaseNotice && <div className="alert alert-warning">{apiBaseNotice}</div>}
       {error && <div className="alert alert-danger">{error}</div>}
 
       <div className="card-grid">
@@ -77,6 +74,8 @@ function Home() {
           <h2>Recent activities</h2>
           <p>{loading ? 'Loading…' : `${activities.length} logged activities`}</p>
           <small>Using API: <code>{activitiesEndpoint}</code></small>
+          <br />
+          <small>URL source: <code>{apiBaseSource}</code></small>
         </div>
       </div>
 

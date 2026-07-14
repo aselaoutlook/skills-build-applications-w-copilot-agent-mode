@@ -15,15 +15,19 @@ The React Compiler is not enabled on this template because of its impact on dev 
 
 This frontend uses `import.meta.env.VITE_CODESPACE_NAME` to build backend API URLs in the form:
 
-    https://${import.meta.env.VITE_CODESPACE_NAME}-8000.app.github.dev/api/[resource]/
+    https://${import.meta.env.VITE_CODESPACE_NAME}-8000.app.github.dev/api/[component]/
 
-If `VITE_CODESPACE_NAME` is not defined, the app will safely fall back to `http://localhost:8000/api/[resource]/` for local development.
+If `VITE_CODESPACE_NAME` is not defined, the app first tries to infer the Codespace name from the current browser hostname and still targets:
+
+    https://${inferredCodespaceName}-8000.app.github.dev/api/[component]/
+
+If hostname inference is not possible (for example outside Codespaces), it safely falls back to `http://localhost:8000/api/[component]/` for local development.
 
 Create a `.env.local` file in the frontend root and define the variable there:
 
     VITE_CODESPACE_NAME=your-codespace-name
 
-> `VITE_CODESPACE_NAME` must be defined for GitHub Codespaces deployments. For local development, the fallback is still safe and prevents `undefined-8000` URLs.
+> `VITE_CODESPACE_NAME` should be defined (for example in `.env.local`) for predictable GitHub Codespaces deployments. The hostname-based fallback still prevents `undefined-8000` URLs when unset.
 
 ## Expanding the Oxlint configuration
 
