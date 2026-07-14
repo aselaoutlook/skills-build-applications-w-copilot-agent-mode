@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { apiBaseUrl } from '../utils/baseUrl.js'
 
-const endpoint = `${apiBaseUrl}/users/`
+const endpoint = import.meta.env.VITE_CODESPACE_NAME?.trim()
+  ? `https://${import.meta.env.VITE_CODESPACE_NAME}-8000.app.github.dev/api/users/`
+  : `${apiBaseUrl}/users/`
 
 const parseResponseItems = (response) => {
   if (Array.isArray(response)) return response
